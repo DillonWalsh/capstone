@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.DELETE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,6 +28,7 @@ public class CapstoneServlet extends HttpServlet {
     private PreparedStatement checkExists = null;
     private PreparedStatement updateRow = null;
     private PreparedStatement createRow = null;
+    private PreparedStatement deleteRow = null;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -143,6 +145,37 @@ public class CapstoneServlet extends HttpServlet {
     }
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        PrintWriter out = resp.getWriter();
+
+        try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connect = DriverManager.getConnection("jdbc:mysql://localhost/project?"+ "user=pace&password=123456");
+
+            StringBuilder jsondata = new StringBuilder();
+            BufferedReader reader = req.getReader();
+            String line;
+
+            //Build the string
+            while ((line = reader.readLine()) != null){
+                jsondata.append(line);
+            }
+            String jsonString = jsondata.toString();
+            ObjectMapper objectMapper = new ObjectMapper();
+            Student student = objectMapper.readValue(jsonString, Student.class);
+            int ID = student.ID;
+            deleteRow = connect.prepareStatement("DELETE FROM student_life WHERE Student_ID = ?;");
+            deleteRow.setInt(1, ID);
+            out.println(deleteRow.toString());
+            
+
+
+
+
+
+        } catch (Exception e) {
+            out.println(e);
+        }
     }
 
     public String printResults(ResultSet resultSet) throws SQLException{
