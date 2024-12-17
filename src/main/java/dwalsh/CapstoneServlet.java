@@ -49,6 +49,7 @@ public class CapstoneServlet extends HttpServlet {
             PrintWriter out = resp.getWriter();
             out.println("<html>");
             out.println("<head>");
+            
             out.println("<title>");
             out.println("</title>");
             out.println("</head>");
